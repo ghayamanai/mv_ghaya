@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use Twig\Environment;
+use App\Repository\VinylMixRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class VinylController extends AbstractController
 {
-    private $twig;
+    private $vinylMixRepository;
 
-    public function __construct(Environment $twig)
+    public function __construct(VinylMixRepository $vinylMixRepository)
     {
-        $this->twig = $twig;
+        $this->vinylMixRepository = $vinylMixRepository;
     }
 
     #[Route('/', name: 'app_homepage')]
@@ -28,7 +28,7 @@ class VinylController extends AbstractController
             ['song' => 'Fantasy', 'artist' => 'Mariah Carey'],
         ];
 
-        $content = $this->twig->render('vinyl/homepage.html.twig', [
+        $content = $this->renderView('vinyl/homepage.html.twig', [
             'title' => 'PB & Jams',
             'tracks' => $tracks,
         ]);
@@ -39,12 +39,12 @@ class VinylController extends AbstractController
     #[Route('/browse/{slug}', name: 'app_browse')]
     public function browse(string $slug = null): Response
     {
-        $genre = $slug ? u(str_replace("-", " ", $slug))->title(true) : null;
-    
-        $content = $this->twig->render('vinyl/browse.html.twig', [
+        $genre = $slug ? u(str_replace('-', ' ', $slug))->title(true) : null;
+        $mixes = $this->vinylMixRepository->findAll();
+
+        return $this->render('vinyl/browse.html.twig', [
             'genre' => $genre,
+            'mixes' => $mixes,
         ]);
-    
-        return new Response($content);
     }
 }
