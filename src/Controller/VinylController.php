@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use Twig\Environment;
-use function Symfony\Component\String\u;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +17,7 @@ class VinylController extends AbstractController
     }
 
     #[Route('/', name: 'app_homepage')]
-    function homepage(): Response
+    public function homepage(): Response
     {
         $tracks = [
             ['song' => 'Gangsta\'s Paradise', 'artist' => 'Coolio'],
@@ -28,14 +27,17 @@ class VinylController extends AbstractController
             ['song' => 'On Bended Knee', 'artist' => 'Boyz II Men'],
             ['song' => 'Fantasy', 'artist' => 'Mariah Carey'],
         ];
-        return $this->twig->render('vinyl/homepage.html.twig', [
+
+        $content = $this->twig->render('vinyl/homepage.html.twig', [
             'title' => 'PB & Jams',
             'tracks' => $tracks,
         ]);
+
+        return new Response($content);
     }
 
     #[Route('/browse/{slug}', name: 'app_browse')]
-    function browse(string $slug = null): Response
+    public function browse(string $slug = null): Response
     {
         $genre = $slug ? u(str_replace("-", " ", $slug))->title(true) : null;
     
@@ -45,5 +47,4 @@ class VinylController extends AbstractController
     
         return new Response($content);
     }
-    
 }

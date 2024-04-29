@@ -28,6 +28,7 @@ class VinylMix
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
+    
 
     #[ORM\Column]
     private int $votes = 0;
